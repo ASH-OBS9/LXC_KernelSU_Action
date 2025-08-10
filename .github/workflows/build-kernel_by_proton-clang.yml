@@ -179,6 +179,15 @@ jobs:
         key: build-kernel-${{ env.DEVICE }}${{ env.UPLOADNAME }}
         max-size: 2G
 
+    - name: Fix stack protector issue
+      run: |
+        cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
+        # 方案1：启用堆栈保护
+        echo "CONFIG_STACKPROTECTOR=y" >> out/.config
+        echo "CONFIG_STACKPROTECTOR_STRONG=y" >> out/.config       
+        # 重新生成配置
+        make O=out ARCH=${{ env.ARCH }} olddefconfig
+
     - name: Build kernel
       run: |
         cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
