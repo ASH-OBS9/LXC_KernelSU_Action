@@ -182,10 +182,9 @@ jobs:
     - name: Fix stack protector issue
       run: |
         cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
-        # 方案1：启用堆栈保护
-        echo "CONFIG_STACKPROTECTOR=y" >> out/.config
-        echo "CONFIG_STACKPROTECTOR_STRONG=y" >> out/.config       
-        # 重新生成配置
+        # 方案1：用scripts/config启用堆栈保护
+        scripts/config --file out/.config --enable CONFIG_STACKPROTECTOR
+        scripts/config --file out/.config --enable CONFIG_STACKPROTECTOR_STRONG
         make O=out ARCH=${{ env.ARCH }} olddefconfig
 
     - name: Build kernel
