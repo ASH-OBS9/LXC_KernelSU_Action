@@ -179,17 +179,17 @@ jobs:
         key: build-kernel-${{ env.DEVICE }}${{ env.UPLOADNAME }}
         max-size: 2G
 
-    - name: Fix stack protector issue
-      run: |
-        cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
-        # 方案1：用scripts/config启用堆栈保护
-        scripts/config --file out/.config --enable CONFIG_STACKPROTECTOR
-        scripts/config --file out/.config --enable CONFIG_STACKPROTECTOR_STRONG
-        make O=out ARCH=${{ env.ARCH }} olddefconfig
+
 
     - name: Build kernel
       run: |
-        cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
+        cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel        
+        if [ ! -f out/.config ]; then
+          make O=out ARCH=${{ env.ARCH }} ${{ env.KERNEL_CONFIG }}
+        fi
+        echo "CONFIG_STACKPROTECTOR=y" >> out/.config
+        echo "CONFIG_STACKPROTECTOR_STRONG=y" >> out/.config
+        make O=out ARCH=${{ env.ARCH }} olddefconfig    
         export PATH=$GITHUB_WORKSPACE/kernel_workspace/clang-aosp/bin:$PATH
         export KBUILD_BUILD_HOST=Github-Action
         export KBUILD_BUILD_USER=$(echo ${{ github.actor }} | tr A-Z a-z)
