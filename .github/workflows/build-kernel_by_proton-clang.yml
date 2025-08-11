@@ -150,7 +150,6 @@ jobs:
         rm -rf utils
         git clone https://github.com/tomxi1997/lxc-docker-support-for-android.git utils
         sed -i '/^[[:space:]]*select[[:space:]]\+NF_NAT_IPV4[[:space:]]*$/a \\tselect NF_NAT_IPV6' utils/Kconfig
-        sed -i '/^[[:space:]]*#select[[:space:]]\+IP6_NF_TARGET_MASQUERADE[[:space:]]*$/s/#//' utils/Kconfig
         echo 'source "utils/Kconfig"' >> "Kconfig"
 
         echo "CONFIG_DOCKER=y" >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}
