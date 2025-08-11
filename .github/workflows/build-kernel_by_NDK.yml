@@ -194,7 +194,7 @@ jobs:
         cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
         rm -rf utils
         git clone https://github.com/tomxi1997/lxc-docker-support-for-android.git utils
-        echo 'source "Kconfig"' >> "Kconfig"
+        echo 'source "$GITHUB_WORKSPACE/Kconfig"' >> "Kconfig"
 
         echo "CONFIG_DOCKER=y" >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}
 
