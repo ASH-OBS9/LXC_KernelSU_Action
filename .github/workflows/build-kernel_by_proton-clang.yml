@@ -190,6 +190,9 @@ jobs:
         scripts/config --file out/.config -e CONFIG_STACKPROTECTOR_STRONG
         make O=out ARCH=${{ env.ARCH }} olddefconfig
 
+        grep "CONFIG_STACKPROTECTOR=y" out/.config || exit 1
+        grep "CONFIG_STACKPROTECTOR_STRONG=y" out/.config || exit 1
+
     - name: Build kernel
       run: |
         cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel         
