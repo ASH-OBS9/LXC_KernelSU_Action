@@ -123,7 +123,7 @@ jobs:
     - name: Setup Configuration for Kernel
       run: |
         cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
-        sed -i "s/CONFIG_CC_STACKPROTECTOR_STRONG=y/# CONFIG_CC_STACKPROTECTOR_STRONG is not set/g" arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}
+        # sed -i "s/CONFIG_CC_STACKPROTECTOR_STRONG=y/# CONFIG_CC_STACKPROTECTOR_STRONG is not set/g" arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}
         if [ ${{ env.ADD_KPROBES_CONFIG }} = true ]; then
             echo "CONFIG_MODULES=y" >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}
             echo "CONFIG_KPROBES=y" >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}
@@ -180,19 +180,6 @@ jobs:
         key: build-kernel-${{ env.DEVICE }}${{ env.UPLOADNAME }}
         max-size: 2G
 
-    - name: Enable stack protector in kernel config
-      run: |
-        cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
-        if [ ! -f out/.config ]; then
-          make O=out ARCH=${{ env.ARCH }} ${{ env.KERNEL_CONFIG }}
-        fi
-        scripts/config --file out/.config -e CONFIG_STACKPROTECTOR
-        scripts/config --file out/.config -e CONFIG_STACKPROTECTOR_STRONG
-        make O=out ARCH=${{ env.ARCH }} olddefconfig
-
-        grep CONFIG_CC_HAS_STACKPROTECTOR out/.config
-        grep "CONFIG_STACKPROTECTOR=y" out/.config || exit 1
-        grep "CONFIG_STACKPROTECTOR_STRONG=y" out/.config || exit 1
 
     - name: Build kernel
       run: |
